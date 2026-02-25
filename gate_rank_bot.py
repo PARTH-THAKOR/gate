@@ -136,9 +136,19 @@ async def main():
         await wait_for_chat_id()
         
     print(f"\n✅ Running GATE Rank Bot (GitHub Actions Trigger) at {time.strftime('%Y-%m-%d %H:%M:%S')}...")
-    message = await fetch_gate_stats()
-    send_telegram_message(message)
-    print("Execution complete! Shutting down until next trigger.")
+    
+    # Run 14 times with 4 minute sleep = ~56 minutes. 
+    # This prevents GitHub from stopping it, while providing continuous updates!
+    for i in range(14):
+        print(f"\n--- Checking at {time.strftime('%Y-%m-%d %H:%M:%S')} (Run {i+1}/14) ---")
+        message = await fetch_gate_stats()
+        send_telegram_message(message)
+        
+        if i < 13:
+            print(f"Sleeping for {CHECK_INTERVAL_MINUTES} minutes...")
+            await asyncio.sleep(CHECK_INTERVAL_MINUTES * 60)
+            
+    print("Execution complete! Shutting down until next hourly trigger.")
 
 if __name__ == "__main__":
     asyncio.run(main())
