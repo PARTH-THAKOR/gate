@@ -18,5 +18,15 @@ RUN playwright install-deps chromium
 # Copy our bot script
 COPY gate_rank_bot.py .
 
+# Create a non-root user and set permissions (Required by HuggingFace Spaces)
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
+WORKDIR $HOME/app
+
+COPY --chown=user . $HOME/app
+
 # Run the python script
 CMD ["python", "-u", "gate_rank_bot.py"]
