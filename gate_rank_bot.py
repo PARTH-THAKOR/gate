@@ -135,13 +135,10 @@ async def main():
     if TELEGRAM_BOT_TOKEN != "YOUR_TELEGRAM_BOT_TOKEN_HERE" and TELEGRAM_CHAT_ID == "YOUR_TELEGRAM_CHAT_ID_HERE":
         await wait_for_chat_id()
         
-    print(f"\nStarting GATE Rank Bot. Checking every {CHECK_INTERVAL_MINUTES} minutes...")
-    while True:
-        print(f"\n--- Checking at {time.strftime('%Y-%m-%d %H:%M:%S')} ---")
-        message = await fetch_gate_stats()
-        send_telegram_message(message)
-        print(f"Sleeping for {CHECK_INTERVAL_MINUTES} minutes...")
-        await asyncio.sleep(CHECK_INTERVAL_MINUTES * 60)
+    print(f"\n✅ Running GATE Rank Bot (GitHub Actions Trigger) at {time.strftime('%Y-%m-%d %H:%M:%S')}...")
+    message = await fetch_gate_stats()
+    send_telegram_message(message)
+    print("Execution complete! Shutting down until next trigger.")
 
 if __name__ == "__main__":
     asyncio.run(main())
